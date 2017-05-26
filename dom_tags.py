@@ -4,6 +4,8 @@
 """
 todo:
 add timeout:http://stackoverflow.com/questions/2712524/handling-urllib2s-timeout-python
+make cli interface
+save output to json
 """
 
 import threading
@@ -11,37 +13,7 @@ import urllib2
 import sys
 import argparse
 import time
-
-def main():
-    parser = argparse.ArgumentParser(description='Demo')
-    parser.add_argument('--verbose',
-        action='store_true',
-        help='verbose flag' )
-    parser.add_argument('--domain','-d',
-        help='domain name' )
-    parser.add_argument('--print-domain','-pd',
-        action='store_true',
-        help='print domain name' )        
-    parser.add_argument('--print-runtime','-prt',
-        action='store_true',
-        help='print domain name' )
-        
-    parser.add_argument('--output','-o',
-        help='print domain name' )
-            
-    args = parser.parse_args()
-    
-    if args.verbose:
-        print("~ Verbose!")
-    else:
-        print("~ Not so verbose")
-
-    if args.domain:
-        ret = get_domain_tag(args.domain)                                                                                                                                                                                                                                                                                                                                                       
-        print "domain",args.domain
-        
-    parser.add_argument('--domain','-d',
-        help='domain name' )
+import datetime
         
 class DomainTags:
     def __init__(self,filename_in=None,filename_out=None):
@@ -126,11 +98,47 @@ class DomainTags:
         else:
             bb="unknown"
         timediff= (time.time() - start_time)
-        ret= {"category":bb,"domain":domain,"runtime_sec":timediff}
+        ret = {"category":bb,
+              "domain":domain,
+              "runtime_sec":timediff,
+              "date":datetime.datetime.now()}
         if out_list != None:
             out_list.append(ret)
-        return ret        
-            
+        return ret
 
-#if __name__ == '__main__':
-#    #main()
+
+def main():
+    parser = argparse.ArgumentParser(description='Domain tags')
+    parser.add_argument('--verbose',
+        action='store_true',
+        help='verbose flag' )
+    parser.add_argument('--print-format-csv',
+        action='store_true',
+        help='Print only output in format DOMAIN;TAG' )
+    parser.add_argument('--domain','-d',
+        help='Get tag for domain' )
+    parser.add_argument('--print-domain','-pd',
+        action='store_true',
+        help='print domain name' )
+    parser.add_argument('--print-runtime','-prt',
+        action='store_true',
+        help='print domain name' )
+    parser.add_argument('--output','-o',
+        help='Output file' )
+    parser.add_argument('--print-simple','-ps',
+        action='store_true',
+        help='print domain name' )
+            
+    args = parser.parse_args()
+    if args.domain:
+        dom=DomainTags()
+        #dom_tagdom.get_domain_tag(args.domain)
+        ret = dom.get_domain_tag(args.domain)
+        ret["category"]
+        if args.print_simple:
+            print ret["domain"],";",ret["category"]
+        else:
+            print ret
+
+if __name__ == '__main__':
+    main()
